@@ -1,6 +1,6 @@
 {
   "name": "gowebsecure",
-  "version": "0.1.1-beta.0",
+  "version": "0.1.1-beta.1",
   "private": false,
   "description": "A nice greeter",
   "main": "lib/index.js",
@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "format" : "",
+    "format": "",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },

@@ -27,7 +27,7 @@ export namespace token {
      * @param password
      * @param force
      */
-    export function refreshAPIToken(callback: (error: string) => void, force?: boolean, password?: string): void {
+    export function refreshAPIToken(callback: (error: string) => void, force?: boolean, password?: string, user?: string): void {
         callQue.push(callback);
 
         // check if already is a token refresh is in process
@@ -47,8 +47,8 @@ export namespace token {
 
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
-        formData.append('client_id', 'openmediacenter');
-        formData.append('client_secret', password ? password : 'openmediacenter');
+        formData.append('client_id', user ? user : 'default');
+        formData.append('client_secret', password ? password : 'default');
         formData.append('scope', 'all');
 
         interface APIToken {
