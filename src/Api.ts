@@ -19,7 +19,7 @@ interface ApiBaseRequest {
  * @param errorcallback a optional callback if an error occured
  */
 export function callAPI<T>(
-    apinode: APINode,
+    apinode: string,
     fd: ApiBaseRequest,
     callback: (_: T) => void,
     errorcallback: (_: string) => void = (_: string): void => {}
@@ -37,7 +37,7 @@ export function callAPI<T>(
  * @param errorcallback
  */
 export function callApiUnsafe<T>(
-    apinode: APINode,
+    apinode: string,
     fd: ApiBaseRequest,
     callback: (_: T) => void,
     errorcallback?: (_: string) => void
@@ -51,14 +51,14 @@ export function callApiUnsafe<T>(
  * @param fd the object to send to backend
  * @param callback the callback with PLAIN text reply from backend
  */
-export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
+export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: string) => void): void {
     token.checkAPITokenValid((mytoken) => {
         generalAPICall(apinode, fd, callback, () => {}, false, false, mytoken);
     });
 }
 
 function generalAPICall<T>(
-    apinode: APINode,
+    apinode: string,
     fd: ApiBaseRequest,
     callback: (_: T) => void,
     errorcallback: (_: string) => void = (_: string): void => {},
@@ -87,8 +87,18 @@ function generalAPICall<T>(
             }
         } else if (response.status === 400) {
             // Bad Request --> invalid token
-            console.log('loading Password page.');
-            // todo
+            // try refreshing the token
+            token.refreshAPIToken((err) => {
+                if (err !== '') {
+                    // call each handler
+                    invalidLoginHandler.map(handler => {
+                        handler();
+                    })
+                } else {
+                    // retry call to api
+                    callAPI(apinode, fd, callback, errorcallback);
+                }
+            }, true);
         } else {
             console.log('Error: ' + response.statusText);
             if (errorcallback) {
@@ -98,15 +108,7 @@ function generalAPICall<T>(
     })();
 }
 
-/**
- * API nodes definitions
- */
-
-// eslint-disable-next-line no-shadow
-export enum APINode {
-    Settings = 'settings',
-    Tags = 'tags',
-    Actor = 'actor',
-    Video = 'video',
-    TVShow = 'tvshow'
+let invalidLoginHandler: (() => void)[] = [];
+export function onInvalidLoginHandler(handler: () => void): void {
+    invalidLoginHandler.push(handler);
 }
