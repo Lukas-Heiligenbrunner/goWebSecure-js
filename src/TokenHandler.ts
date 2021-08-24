@@ -26,6 +26,7 @@ export namespace token {
      * @param callback to be called after successful refresh
      * @param password
      * @param force
+     * @param user
      */
     export function refreshAPIToken(callback: (error: string) => void, force?: boolean, password?: string, user?: string): void {
         callQue.push(callback);
@@ -62,8 +63,6 @@ export namespace token {
             token_type: string; // no camel case allowed because of backendlib
         }
 
-        console.log(APiHost);
-
         fetch(APiHost + 'token', {method: 'POST', body: formData})
             .then((response) =>
                 response.json().then((result: APIToken) => {
@@ -88,13 +87,12 @@ export namespace token {
 
     export function apiTokenValid(): boolean {
         // check if a cookie with token is available
-        // const token = getTokenCookie();
-        const tmptoken = tokenStore.loadToken();
-        if (tmptoken !== null) {
+        const tmpToken = tokenStore.loadToken();
+        if (tmpToken !== null) {
             // check if token is at least valid for the next minute
-            if (tmptoken.expireTime > new Date().getTime() / 1000 + 60) {
-                apiToken = tmptoken.accessToken;
-                expireSeconds = tmptoken.expireTime;
+            if (tmpToken.expireTime > new Date().getTime() / 1000 + 60) {
+                apiToken = tmpToken.accessToken;
+                expireSeconds = tmpToken.expireTime;
 
                 return true;
             }

@@ -2,7 +2,7 @@
 A go/js framework to simplify the creation of a restuful api service application.
 
 ## Example Code
-
+### Initialization
 ```js
 // initialize TokenStore and APIUrl
 token.init(new MMKVTokenStore(), APIURL);
@@ -26,4 +26,13 @@ if (token.apiTokenValid()) {
     }
   });
 }
+```
+
+### Perform API request
+
+```javascript
+callAPI("testnode", {action: "testAction", SomeArg: true}, (resp) => {
+    // here we received the response
+    console.log(resp)
+})
 ```

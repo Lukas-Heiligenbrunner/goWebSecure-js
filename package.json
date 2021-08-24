@@ -9,9 +9,9 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "typescript": "^4.1.2"
   },
   "devDependencies": {
+    "typescript": "^4.1.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Lukas-Heiligenbrunner/goWebSecure-js.git"
+    "url": "git+https://github.com/gowebsecure/goWebSecure-js.git"
   },
   "eslintConfig": {
     "extends": [
